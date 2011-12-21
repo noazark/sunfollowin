@@ -1,0 +1,13 @@
+!!!
+%html
+  %head
+    %meta{charset: "utf-8"}
+    %meta{content: "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible"}
+
+    = stylesheet_link_tag :app
+    = javascript_include_tag "http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=true"
+    = javascript_include_tag :app
+    = yield_content :head
+
+  %body{class: "#{page_classes}"}
+    = yield
