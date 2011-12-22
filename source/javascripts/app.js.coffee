@@ -123,6 +123,7 @@ class Coordinates
 class Settings
   coords: new Coordinates(38.94, -94.68)
   speed: 5
+  duration: 365
   color: "#990000"
 
 window.onload = () =>
@@ -182,7 +183,7 @@ window.onload = () =>
   reload = ->
     father = new Observer(settings.coords, settings.speed)
     clearMarkers()
-    father.move(86400 * 3650 * 0.25)
+    father.move(settings.duration * 86400)
 
   reload()
 
@@ -195,6 +196,8 @@ window.onload = () =>
     trailOptions.strokeColor = settings.color
     trail.setOptions(trailOptions)
   f3 = gui.addFolder("Time")
+  f3.add(settings, "duration").min(1).max(1460).step(1).onFinishChange ->
+    reload()
 
   f1.open()
   f2.open()
