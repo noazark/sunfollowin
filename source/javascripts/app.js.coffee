@@ -123,7 +123,7 @@ class Coordinates
 class Settings
   coords: new Coordinates(38.94, -94.68)
   speed: 5
-  duration: 365
+  duration: 1
   color: "#990000"
 
 window.onload = () =>
