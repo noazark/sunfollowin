@@ -201,3 +201,4 @@ window.onload = () =>
 
   f1.open()
   f2.open()
+  f3.open()
