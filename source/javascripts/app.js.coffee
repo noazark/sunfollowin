@@ -17,38 +17,53 @@ class Observer
   _resolution: 3600
   totalDistance: 0
 
-  coordinateChange: ->
+  callbacks:
+    coordinateChange: ->
 
-  constructor: (@coordinates, @speed = 4.750, @startAt = new Date(), @stopAt = new Date(@startAt.setDate(@startAt.getDate() + 1))) ->
+  reload: ->
+
+  constructor: (@coordinates, @speed = 4.750, @startAt = new Date()) ->
     @currentTime = @startAt
     @sun = new Sun(this)
 
   setCoordinates: (value) ->
     @coordinates = value
-    #Events.invoke(this, 'observer.coordinateChange');
-    @coordinateChange(@coordinates)
+    @callbacks.coordinateChange(@coordinates)
 
   setSpeed: (value) ->
     @speed = value
 
+  setStartAt: (value) ->
+    @totalDistance = 0
+    @startAt = value
+    @currentTime = value
+
   move: (duration, increment = @_resolution) ->
     while (duration -= increment) > 0
       increment = duration if duration < increment
-      @setCoordinates @step(@sun.getHeading(), increment)
+
+      if pos = @step(@sun.getHeading(), increment)
+        @setCoordinates pos
 
   step: (heading, increment = @_resolution) ->
     @inrementCurrentTime(increment)
-    distance = (@speed * 1000) / 3600 * increment
-    @totalDistance += distance
-    console.log @totalDistance
+    pos = false
+    if @currentTime.getTime() >= @sun.periods.sunrise.getTime() && @currentTime.getTime() <= @sun.periods.sunset.getTime()
+      distance = @speed * 1000
+      @totalDistance += distance
 
-    pos = google.maps.geometry.spherical.computeOffset(
-      @coordinates.toGoogleMaps(),
-      distance,
-      heading
-    )
+      pos = google.maps.geometry.spherical.computeOffset(
+        @coordinates.toGoogleMaps(),
+        distance,
+        heading
+      )
 
-    return new Coordinates(pos.lat(), pos.lng())
+    @sun = new Sun(this)
+
+    if pos
+      new Coordinates(pos.lat(), pos.lng())
+    else
+      false
 
   inrementCurrentTime: (increment) ->
     @currentTime = new Date(@currentTime.getTime() + (increment * 1000))
@@ -88,7 +103,7 @@ class Sun
 
   getHeading: ->
     pos = @getPosition()
-    @radiansToDegrees(Math.PI / 2 + pos.azimuth)
+    @radiansToDegrees(Math.PI / 2 + pos.azimuth) + 90
 
   radiansToDegrees: (radians) ->
     radians * 180 / Math.PI
@@ -105,22 +120,75 @@ class Coordinates
   toGoogleMaps: ->
     new google.maps.LatLng(@lat, @lng)
 
-window.onload = () =>
-  father = new Observer(new Coordinates(38.94, -94.68), new Date(2011, 5, 21, 12, 0, 0, 0))
+class Settings
+  coords: new Coordinates(38.94, -94.68)
+  speed: 5
+  color: "#990000"
 
-  self.mapOptions =
+window.onload = () =>
+  settings = new Settings()
+  path = [settings.coords.toGoogleMaps()]
+
+
+  father = new Observer(settings.coords, settings.speed)
+
+  markerOptions =
+    position: settings.coords.toGoogleMaps(),
+    draggable: true,
+    icon: new google.maps.MarkerImage("/images/marker.png", null, null, new google.maps.Point(22,42))
+
+  trailOptions =
+    geodesic: true,
+    strokeColor: "#990000",
+    strokeOpacity: 1.0,
+    strokeWeight: 5
+
+  mapOptions =
     zoom: 9
-    center: father.coordinates.toGoogleMaps()
+    center: settings.coords.toGoogleMaps()
     disableDefaultUI: false
+    panControl: false
+    streetViewControl: false
+    mapTypeControl: false
     mapTypeId: google.maps.MapTypeId.HYBRID
 
-  map = new google.maps.Map(document.getElementById("map"), self.mapOptions)
+  map = new google.maps.Map(document.getElementById("map"), mapOptions)
 
-  father.coordinateChange = ->
-    new google.maps.Marker(
-      position: father.coordinates.toGoogleMaps()
-      map: map
-      title: "Hello World!"
-    )
+  trail = new google.maps.Polyline(trailOptions)
+  trail.setMap(map)
 
-  father.move(86400 * 4)
+  marker = new google.maps.Marker(markerOptions)
+  marker.setMap(map)
+
+  google.maps.event.addListener marker, "dragend", ->
+    markerPos = marker.getPosition()
+    settings.coords = new Coordinates(markerPos.lat(), markerPos.lng())
+    reload()
+
+  clearMarkers = ->
+    trail.setPath(path = [settings.coords.toGoogleMaps()])
+
+  father.callbacks.coordinateChange = ->
+    path.push father.coordinates.toGoogleMaps()
+
+    trail.setPath path
+
+  reload = ->
+    father = new Observer(settings.coords, settings.speed)
+    clearMarkers()
+    father.move(86400 * 3650 * 0.25)
+
+  reload()
+
+  gui = new dat.GUI()
+  f1 = gui.addFolder("Follower")
+  f1.add(settings, "speed").min(1).max(50).step(1).onFinishChange ->
+    reload()
+  f2 = gui.addFolder("Map")
+  f2.addColor(settings, "color").onChange ->
+    trailOptions.strokeColor = settings.color
+    trail.setOptions(trailOptions)
+  f3 = gui.addFolder("Time")
+
+  f1.open()
+  f2.open()
