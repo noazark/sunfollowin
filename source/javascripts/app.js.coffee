@@ -208,10 +208,12 @@ window.onload = () =>
     reload()
   f1.add(settings, "duration").min(1).max(1460).step(1).onFinishChange ->
     reload()
+
   f2 = gui.addFolder("Map")
   f2.addColor(settings, "color").onChange ->
     trailOptions.strokeColor = settings.color
     trail.setOptions(trailOptions)
+
   f3 = gui.addFolder("Time")
   f3.add(settings.startAt, "year").min(1).max(3000).step(1).onFinishChange ->
     reload()
