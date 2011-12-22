@@ -127,8 +127,14 @@ class Settings
 
 window.onload = () =>
   settings = new Settings()
-  path = [settings.coords.toGoogleMaps()]
 
+  if navigator.geolocation
+    navigator.geolocation.getCurrentPosition (position) ->
+      settings.coords = new Coordinates(position.coords.latitude, position.coords.longitude)
+      marker.setPosition settings.coords.toGoogleMaps()
+      reload()
+
+  path = [settings.coords.toGoogleMaps()]
 
   father = new Observer(settings.coords, settings.speed)
 
