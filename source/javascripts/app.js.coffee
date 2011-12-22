@@ -206,12 +206,22 @@ window.onload = () =>
   f1 = gui.addFolder("Follower")
   f1.add(settings, "speed").min(1).max(50).step(1).onFinishChange ->
     reload()
+  f1.add(settings, "duration").min(1).max(1460).step(1).onFinishChange ->
+    reload()
   f2 = gui.addFolder("Map")
   f2.addColor(settings, "color").onChange ->
     trailOptions.strokeColor = settings.color
     trail.setOptions(trailOptions)
   f3 = gui.addFolder("Time")
-  f3.add(settings, "duration").min(1).max(1460).step(1).onFinishChange ->
+  f3.add(settings.startAt, "year").min(1).max(3000).step(1).onFinishChange ->
+    reload()
+  f3.add(settings.startAt, "month").min(1).max(12).step(1).onFinishChange ->
+    reload()
+  f3.add(settings.startAt, "day").min(1).max(31).step(1).onFinishChange ->
+    reload()
+  f3.add(settings.startAt, "hour").min(0).max(23) .step(1).onFinishChange ->
+    reload()
+  f3.add(settings.startAt, "minute").min(0).max(59).step(1).onFinishChange ->
     reload()
 
   f1.open()
