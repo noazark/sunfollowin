@@ -187,7 +187,16 @@ window.onload = () =>
     trail.setPath path
 
   reload = ->
-    father = new Observer(settings.coords, settings.speed)
+    startAt = new Date()
+    startAt.setFullYear(settings.startAt.year)
+    startAt.setMonth(settings.startAt.month - 1)
+    startAt.setDate(settings.startAt.day)
+    startAt.setHours(settings.startAt.hour)
+    startAt.setMinutes(settings.startAt.minute)
+    startAt.setSeconds(0);
+    startAt.setMilliseconds(0);
+    console.log startAt.toString()
+    father = new Observer(settings.coords, settings.speed, startAt)
     clearMarkers()
     father.move(settings.duration * 86400)
 
