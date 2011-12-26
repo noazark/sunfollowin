@@ -142,11 +142,10 @@ window.onload = () =>
   if navigator.geolocation
     navigator.geolocation.getCurrentPosition(
       (position) ->
-        settings.coords ||= new Coordinates(position.coords.latitude, position.coords.longitude)
+        settings.coords = new Coordinates(position.coords.latitude, position.coords.longitude)
         marker.setPosition settings.coords.toGoogleMaps()
         reload()
       (error) ->
-        settings.coords ||= new Coordinates(38.94, -94.68)
         switch error.code
           when error.TIMEOUT
             console.warn "position timeout"
