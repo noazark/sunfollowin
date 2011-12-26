@@ -140,10 +140,23 @@ window.onload = () =>
   settings = new Settings()
 
   if navigator.geolocation
-    navigator.geolocation.getCurrentPosition (position) ->
-      settings.coords = new Coordinates(position.coords.latitude, position.coords.longitude)
-      marker.setPosition settings.coords.toGoogleMaps()
-      reload()
+    navigator.geolocation.getCurrentPosition(
+      (position) ->
+        settings.coords ||= new Coordinates(position.coords.latitude, position.coords.longitude)
+        marker.setPosition settings.coords.toGoogleMaps()
+        reload()
+      (error) ->
+        settings.coords ||= new Coordinates(38.94, -94.68)
+        switch error.code
+          when error.TIMEOUT
+            console.warn "position timeout"
+          when error.POSITION_UNAVAILABLE
+            console.warn "position unavailable"
+          when error.PERMISSION_DENIED
+            console.warn "position permission denied"
+          when error.UNKNOWN_ERROR
+            console.warn "position unknown error"
+      )
 
   path = [settings.coords.toGoogleMaps()]
 
