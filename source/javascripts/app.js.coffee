@@ -191,6 +191,7 @@ window.onload = () =>
     trail.setPath path
 
   reload = ->
+    map.panTo(settings.coords.toGoogleMaps())
     startAt = new Date()
     startAt.setFullYear(settings.startAt.year)
     startAt.setMonth(settings.startAt.month - 1)
