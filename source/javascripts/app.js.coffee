@@ -146,7 +146,6 @@ window.onload = () =>
         marker.setPosition settings.coords.toGoogleMaps()
         reload()
       (error) ->
-        settings.coords ?= new Coordinates(38.94, -94.68)
         switch error.code
           when error.TIMEOUT
             console.warn "position timeout"
@@ -156,6 +155,9 @@ window.onload = () =>
             console.warn "position permission denied"
           when error.UNKNOWN_ERROR
             console.warn "position unknown error"
+
+        settings.coords ?= new Coordinates(38.94, -94.68)
+        reload()
       )
 
   path = []
@@ -163,6 +165,7 @@ window.onload = () =>
   father = new Observer(new Coordinates(38.94, -94.68))
 
   markerOptions =
+    position: father.coordinates.toGoogleMaps()
     draggable: true,
     icon: new google.maps.MarkerImage("/images/marker.png", null, null, new google.maps.Point(22,42))
 
