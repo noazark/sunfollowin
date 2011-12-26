@@ -9,8 +9,6 @@
     = javascript_include_tag :app
     = yield_content :head
 
-  %body{class: "#{page_classes}"}
-    = yield
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '#{ data.app.google.analytics_code }']);
@@ -21,3 +19,6 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
+
+  %body{class: "#{page_classes}"}
+    = yield
