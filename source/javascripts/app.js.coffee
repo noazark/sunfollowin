@@ -219,7 +219,7 @@ window.onload = () =>
     trail.setOptions(trailOptions)
 
   f3 = gui.addFolder("Time")
-  f3.add(settings.startAt, "year").min(1).max(3000).step(1).onFinishChange ->
+  f3.add(settings.startAt, "year").min(0).max(3000).step(1).onFinishChange ->
     reload()
   f3.add(settings.startAt, "month").min(1).max(12).step(1).onFinishChange ->
     reload()
