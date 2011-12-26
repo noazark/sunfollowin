@@ -125,7 +125,7 @@ class Coordinates
     new google.maps.LatLng(@lat, @lng)
 
 class Settings
-  coords: new Coordinates(38.94, -94.68)
+  coords: null
   speed: 5
   duration: 1
   color: "#990000"
@@ -142,10 +142,11 @@ window.onload = () =>
   if navigator.geolocation
     navigator.geolocation.getCurrentPosition(
       (position) ->
-        settings.coords = new Coordinates(position.coords.latitude, position.coords.longitude)
+        settings.coords ?= new Coordinates(position.coords.latitude, position.coords.longitude)
         marker.setPosition settings.coords.toGoogleMaps()
         reload()
       (error) ->
+        settings.coords ?= new Coordinates(38.94, -94.68)
         switch error.code
           when error.TIMEOUT
             console.warn "position timeout"
@@ -157,12 +158,11 @@ window.onload = () =>
             console.warn "position unknown error"
       )
 
-  path = [settings.coords.toGoogleMaps()]
+  path = []
 
-  father = new Observer(settings.coords, settings.speed)
+  father = new Observer(new Coordinates(38.94, -94.68))
 
   markerOptions =
-    position: settings.coords.toGoogleMaps(),
     draggable: true,
     icon: new google.maps.MarkerImage("/images/marker.png", null, null, new google.maps.Point(22,42))
 
@@ -173,8 +173,8 @@ window.onload = () =>
     strokeWeight: 5
 
   mapOptions =
+    center: father.coordinates.toGoogleMaps()
     zoom: 9
-    center: settings.coords.toGoogleMaps()
     disableDefaultUI: false
     panControl: false
     streetViewControl: false
@@ -221,8 +221,6 @@ window.onload = () =>
     father = new Observer(settings.coords, settings.speed, startAt)
     clearMarkers()
     father.move(settings.duration * 86400)
-
-  reload()
 
   gui = new dat.GUI()
   f1 = gui.addFolder("Follower")
