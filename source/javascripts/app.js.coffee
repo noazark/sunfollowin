@@ -212,7 +212,12 @@ window.onload = () =>
     startAt.setMinutes(settings.startAt.minute)
     startAt.setSeconds(0);
     startAt.setMilliseconds(0);
-    console.info startAt.toString()
+
+    console.group("reload()")
+    console.info "coords: " + settings.coords.toString()
+    console.info "startAt: " + startAt.toString()
+    console.groupEnd()
+
     father = new Observer(settings.coords, settings.speed, startAt)
     clearMarkers()
     father.move(settings.duration * 86400)
