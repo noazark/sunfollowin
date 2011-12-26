@@ -130,10 +130,10 @@ class Settings
   duration: 1
   color: "#990000"
   startAt:
-    year: 2011
-    month: 11
-    day: 21
-    hour: 21
+    year: new Date().getFullYear()
+    month: new Date().getMonth()
+    day: new Date().getDate()
+    hour: 0
     minute: 0
 
 window.onload = () =>
