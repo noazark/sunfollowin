@@ -5,6 +5,10 @@
 #  lat: 38.94
 #  lng: 94.68
 
+# Bethlehem:
+#  lat: 31.26
+#  lng: 35.70
+
 class Observer
   # coordinates: Terrestrial latitude and lognitude of the observer
   # speed: Observer's rate of motion in km/h
