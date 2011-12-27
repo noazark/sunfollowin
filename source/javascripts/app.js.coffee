@@ -274,6 +274,7 @@ window.onload = () =>
   f2.addColor(settings, "color").onChange ->
     trailOptions.strokeColor = settings.color
     trail.setOptions(trailOptions)
+    settings.xport()
 
   f3 = gui.addFolder("Time")
   f3.add(settings.startAt, "year").min(0).max(3000).step(1).onFinishChange ->
