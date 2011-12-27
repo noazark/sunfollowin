@@ -209,7 +209,7 @@ window.onload = () =>
 
   trailOptions =
     geodesic: true,
-    strokeColor: "#990000",
+    strokeColor: settings.color,
     strokeOpacity: 1.0,
     strokeWeight: 5
 
