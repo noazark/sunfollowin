@@ -174,7 +174,8 @@ class Settings extends BaseClass
 
 window.onload = () =>
   settings = new Settings()
-  settings = settings.mport()
+  stash = settings.mport()
+  settings = stash if stash?
 
   if navigator.geolocation
     navigator.geolocation.getCurrentPosition(
