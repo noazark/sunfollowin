@@ -182,6 +182,7 @@ window.onload = () =>
       (position) ->
         settings.coords ?= new Coordinates(position.coords.latitude, position.coords.longitude)
         marker.setPosition settings.coords.toGoogleMaps()
+        map.panTo(settings.coords.toGoogleMaps())
         reload()
       (error) ->
         switch error.code
@@ -233,6 +234,7 @@ window.onload = () =>
   google.maps.event.addListener marker, "dragend", ->
     markerPos = marker.getPosition()
     settings.coords = new Coordinates(markerPos.lat(), markerPos.lng())
+    map.panTo(settings.coords.toGoogleMaps())
     reload()
 
   clearMarkers = ->
@@ -245,7 +247,6 @@ window.onload = () =>
 
   reload = ->
     settings.xport()
-    map.panTo(settings.coords.toGoogleMaps())
     startAt = new Date()
     startAt.setFullYear(settings.startAt.year)
     startAt.setMonth(settings.startAt.month - 1)
