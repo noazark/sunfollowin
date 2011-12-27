@@ -1,6 +1,42 @@
 #= require_directory ./lib
 #= require_directory .
 
+class BaseClass
+  xport: (store = true)->
+    # create an anon object
+    object = {}
+    # recurse through self properties
+    for k of this
+      # ask if xport is a function
+      if this[k]? && typeof this[k].xport is "function"
+        object[k] = this[k].xport(false)
+      else
+        object[k] = this[k]
+    # save result to anon object
+    object["type"] = this.constructor.name
+    # store object
+    localStorage.setItem(this.constructor.name, JSON.stringify(object)) if store is true
+    # return object
+    object
+
+  mport: (data)=>
+    # create anon object from storage or data object
+    data ?= JSON.parse localStorage.getItem(this.constructor.name)
+    if data?
+      # if name is an object, childObj = eval "new #{obj[name][type]}"
+      if data["type"]?
+        object = eval("new #{data["type"]}()")
+      else
+        object = {}
+      # recurse through object
+      for k of data
+        if data[k] instanceof Object
+          object[k] = @mport(data[k])
+        else
+          object[k] = data[k] unless k == "type"
+      # return object
+      object
+
 # OVERLAND_PARK:
 #  lat: 38.94
 #  lng: 94.68
@@ -112,7 +148,7 @@ class Sun
   radiansToDegrees: (radians) ->
     radians * 180 / Math.PI
 
-class Coordinates
+class Coordinates extends BaseClass
   # lat: Latitude
   # lng: Longitude
 
@@ -124,7 +160,7 @@ class Coordinates
   toGoogleMaps: ->
     new google.maps.LatLng(@lat, @lng)
 
-class Settings
+class Settings extends BaseClass
   coords: null
   speed: 5
   duration: 1
@@ -138,6 +174,7 @@ class Settings
 
 window.onload = () =>
   settings = new Settings()
+  settings = settings.mport()
 
   if navigator.geolocation
     navigator.geolocation.getCurrentPosition(
@@ -206,6 +243,7 @@ window.onload = () =>
     trail.setPath path
 
   reload = ->
+    settings.xport()
     map.panTo(settings.coords.toGoogleMaps())
     startAt = new Date()
     startAt.setFullYear(settings.startAt.year)
