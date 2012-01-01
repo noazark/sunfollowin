@@ -1,13 +1,19 @@
 express = require("express")
+assets = require('connect-assets')
 routes = require("./routes")
+
 app = module.exports = express.createServer()
 app.configure ->
   app.set "views", __dirname + "/views"
   app.set "view engine", "jade"
+  app.use assets()
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use app.router
   app.use express.static(__dirname + "/public")
+
+js.root = "javascripts"
+css.root = "stylesheets"
 
 app.configure "development", ->
   app.use express.errorHandler(
