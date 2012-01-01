@@ -6,6 +6,7 @@
       "connect-assets": "2.1.6",
       "coffee-script": "1.2.0",
       "express": "2.5.2",
+      "express-resource": "0.2.4",
       "jade": ">= 0.20.0"
   }
 }

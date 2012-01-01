@@ -1,7 +1,8 @@
 express = require("express")
 assets = require('connect-assets')
-routes = require("./routes")
 fs = require('fs')
+
+require('express-resource')
 
 app = module.exports = express.createServer()
 app.configure ->
@@ -26,6 +27,7 @@ app.set "config", JSON.parse(fs.readFileSync("./config.json"))
 js.root = "javascripts"
 css.root = "stylesheets"
 
-app.get "/", routes.index
+app.resource require('./controllers/map')
+
 app.listen 3000
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
