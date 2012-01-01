@@ -7,15 +7,11 @@ app = module.exports = express.createServer()
 app.configure ->
   app.set "views", __dirname + "/views"
   app.set "view engine", "jade"
-  app.set "config", JSON.parse(fs.readFileSync("./config.json"))
   app.use assets()
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use app.router
   app.use express.static(__dirname + "/public")
-
-js.root = "javascripts"
-css.root = "stylesheets"
 
 app.configure "development", ->
   app.use express.errorHandler(
@@ -25,6 +21,10 @@ app.configure "development", ->
 
 app.configure "production", ->
   app.use express.errorHandler()
+
+app.set "config", JSON.parse(fs.readFileSync("./config.json"))
+js.root = "javascripts"
+css.root = "stylesheets"
 
 app.get "/", routes.index
 app.listen 3000
