@@ -1,5 +1,4 @@
-#= require_directory ./lib
-#= require_directory .
+#= require_tree ./lib
 
 class BaseClass
   xport: (store = true)->
