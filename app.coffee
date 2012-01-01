@@ -1,11 +1,13 @@
 express = require("express")
 assets = require('connect-assets')
 routes = require("./routes")
+fs = require('fs')
 
 app = module.exports = express.createServer()
 app.configure ->
   app.set "views", __dirname + "/views"
   app.set "view engine", "jade"
+  app.set "config", JSON.parse(fs.readFileSync("./config.json"))
   app.use assets()
   app.use express.bodyParser()
   app.use express.methodOverride()
