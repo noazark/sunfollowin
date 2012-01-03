@@ -1,7 +1,7 @@
 #= require_tree ./lib
 
 class BaseClass
-  xport: (store = true)->
+  xport: (deflate = true)->
     # create an anon object
     object = {}
     # recurse through self properties
@@ -13,14 +13,13 @@ class BaseClass
         object[k] = this[k]
     # save result to anon object
     object["type"] = this.constructor.name
-    # store object
-    localStorage.setItem(this.constructor.name, JSON.stringify(object)) if store is true
-    # return object
-    object
+
+    if deflate
+      JSON.stringify(object)
+    else
+      object
 
   mport: (data)=>
-    # create anon object from storage or data object
-    data ?= JSON.parse localStorage.getItem(this.constructor.name)
     if data?
       # if name is an object, childObj = eval "new #{obj[name][type]}"
       if data["type"]?
@@ -173,7 +172,7 @@ class Settings extends BaseClass
 
 window.onload = () =>
   settings = new Settings()
-  stash = settings.mport()
+  stash = settings.mport(JSON.parse localStorage.getItem("Settings"))
   settings = stash if stash?
 
   if navigator.geolocation
@@ -245,7 +244,7 @@ window.onload = () =>
     trail.setPath path
 
   reload = ->
-    settings.xport()
+    localStorage.setItem("Settings", settings.xport())
     startAt = new Date()
     startAt.setFullYear(settings.startAt.year)
     startAt.setMonth(settings.startAt.month - 1)
@@ -275,7 +274,7 @@ window.onload = () =>
   f2.addColor(settings, "color").onChange ->
     trailOptions.strokeColor = settings.color
     trail.setOptions(trailOptions)
-    settings.xport()
+    localStorage.setItem("Settings", settings.xport())
 
   f3 = gui.addFolder("Time")
   f3.add(settings.startAt, "year").min(0).max(3000).step(1).onFinishChange ->
