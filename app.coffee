@@ -6,7 +6,7 @@ require('express-resource')
 
 fs.stat "./heroku_config.json", (err, stat) ->
   unless err
-    app.settings.env = JSON.parse(fs.readFileSync("./heroku_config.json"))
+    process.env = JSON.parse(fs.readFileSync("./heroku_config.json"))
 
 app = module.exports = express.createServer()
 app.configure ->
