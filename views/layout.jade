@@ -11,7 +11,7 @@ html
 
     script(type='text/javascript')
       var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', '#{app.settings.config.google.analytics_code}']);
+      _gaq.push(['_setAccount', '#{app.settings.env['ANALYTICS_CODE']}']);
       _gaq.push(['_trackPageview']);
 
       (function() {

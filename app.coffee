@@ -4,6 +4,10 @@ fs = require('fs')
 
 require('express-resource')
 
+fs.stat "./heroku_config.json", (err, stat) ->
+  unless err
+    app.settings.env = JSON.parse(fs.readFileSync("./heroku_config.json"))
+
 app = module.exports = express.createServer()
 app.configure ->
   app.set "views", __dirname + "/views"
@@ -23,7 +27,6 @@ app.configure "development", ->
 app.configure "production", ->
   app.use express.errorHandler()
 
-app.set "config", JSON.parse(fs.readFileSync("./config.json"))
 js.root = "javascripts"
 css.root = "stylesheets"
 
