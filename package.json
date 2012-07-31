@@ -2,7 +2,10 @@
   "name": "sunfollowin",
   "version": "1.1.0",
   "private": true,
-  "engine": "node 0.8.4",
+  "engines": {
+    "node" : "0.8.4",
+    "npm" : "1.1.41"
+  },
   "dependencies": {
     "connect-assets": "2.1.6",
     "coffee-script": "1.2.0",
