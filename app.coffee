@@ -32,5 +32,6 @@ css.root = "stylesheets"
 
 app.resource require('./controllers/map')
 
-app.listen 3000
-console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
+port = process.env.PORT || 3000;
+app.listen port, () ->
+  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
